@@ -5,7 +5,8 @@ import PlayButton from "@/components/PlayButton";
 import Logo from "@/icons/Logo.astro";
 import Layout from "@/layouts/Layout.astro";
 import { getRadioBrowserApi, withRetry } from "@/lib/radio-browser";
-import { cleanStation, type Station } from "@/stores/usePlayerStore";
+import { cleanStation } from "@/lib/station";
+import type { Station } from "@/types/station";
 
 const { id } = Astro.params;
 

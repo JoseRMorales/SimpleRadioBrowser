@@ -3,7 +3,8 @@ import ErrorState from "@/components/ErrorState.astro";
 import StationCard from "@/components/StationCard.astro";
 import Layout from "@/layouts/Layout.astro";
 import { getRadioBrowserApi, withRetry } from "@/lib/radio-browser";
-import { cleanStation, type Station } from "@/stores/usePlayerStore";
+import { cleanStation } from "@/lib/station";
+import type { Station } from "@/types/station";
 
 let topSpanishStations: Station[] = [];
 let error = null;

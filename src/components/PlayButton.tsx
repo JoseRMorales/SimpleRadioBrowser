@@ -1,6 +1,7 @@
 import { Loader2, Pause, Play } from 'lucide-react';
 import type React from 'react';
-import { type Station, usePlayerStore } from '@/stores/usePlayerStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
+import type { Station } from '@/types/station';
 
 interface PlayButtonProps {
 	station: Station;
