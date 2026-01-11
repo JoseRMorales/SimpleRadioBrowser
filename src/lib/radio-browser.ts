@@ -24,13 +24,12 @@ async function getDiscoveryServers(): Promise<string[]> {
 			return FALLBACK_SERVERS;
 		}
 
-		FALLBACK_SERVERS.forEach((server) => {
-			if (!servers.includes(server)) {
-				servers.push(server);
+		servers.forEach((server) => {
+			if (!FALLBACK_SERVERS.includes(server)) {
+				FALLBACK_SERVERS.push(server);
 			}
 		});
-		console.log('Resolved radio-browser servers:', servers);
-		return servers;
+		return FALLBACK_SERVERS;
 	} catch (error) {
 		console.error('DNS Discovery failed, using fallbacks:', error);
 		return FALLBACK_SERVERS;
