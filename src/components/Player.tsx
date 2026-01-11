@@ -1,6 +1,6 @@
 import { Loader2, Music, Pause, Play, Volume2 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { usePlayerStore } from '@/lib/usePlayerStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 
 // Single global audio instance to prevent duplication
 let audioInstance: HTMLAudioElement | null = null;

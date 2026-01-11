@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -46,9 +47,20 @@ export const usePlayerStore = create<PlayerState>()(
 			isPlaying: false,
 			isLoading: false,
 			volume: 0.7,
-			setCurrentStation: (station) =>
-				set({ currentStation: station, isPlaying: !!station, isLoading: !!station }),
-			togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
+			setCurrentStation: (station) => {
+				if (station && !station.urlResolved) {
+					toast.error(`Station "${station.name}" has no valid stream URL.`);
+					return;
+				}
+				set({ currentStation: station, isPlaying: !!station, isLoading: !!station });
+			},
+			togglePlay: () =>
+				set((state) => {
+					if (!state.currentStation?.urlResolved && !state.isPlaying) {
+						return state;
+					}
+					return { isPlaying: !state.isPlaying };
+				}),
 			setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
 			setIsLoading: (isLoading: boolean) => set({ isLoading }),
 			setVolume: (volume: number) => set({ volume }),
