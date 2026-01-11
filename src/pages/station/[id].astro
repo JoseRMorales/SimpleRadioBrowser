@@ -1,0 +1,120 @@
+---
+import { RadioBrowserApi, type Station } from "radio-browser-api";
+import Logo from "@/icons/Logo.astro";
+import Layout from "@/layouts/Layout.astro";
+
+const { id } = Astro.params;
+
+if (!id) {
+	return Astro.redirect("/");
+}
+
+const api = new RadioBrowserApi("Simple Radio Browser App");
+let station: Station | undefined ;
+
+try {
+	const stations = await api.getStationsById([id]);
+	station = stations[0];
+} catch (error) {
+	console.error("Error fetching station:", error);
+}
+
+if (!station) {
+	return Astro.redirect("/404");
+}
+
+const hasFavicon = station.favicon && station.favicon.trim() !== "";
+---
+
+<Layout title={`${station.name} - Simple Radio Browser`}>
+	<div class="relative flex flex-col h-full overflow-hidden bg-zinc-900 text-zinc-100">
+		<!-- Background Gradient Overlay -->
+		<div class="absolute inset-0 bg-linear-to-b from-blue-600/20 to-zinc-900 pointer-events-none"></div>
+
+		<div class="relative z-10 flex-1 overflow-y-auto px-6 py-8">
+			<div class="max-w-[1000px] mx-auto">
+				<!-- Back Navigation -->
+				<a href="/" class="inline-flex items-center gap-2 mb-8 text-zinc-400 hover:text-white transition-colors">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+					Back to Home
+				</a>
+
+				<header class="flex flex-col md:flex-row gap-8 items-center md:items-end mb-12">
+					<div 
+						class="w-64 h-64 shrink-0 shadow-2xl rounded-2xl overflow-hidden bg-zinc-800 flex items-center justify-center"
+						transition:name={`station-image-${station.id}`}
+					>
+						{hasFavicon ? (
+							<img 
+								src={station.favicon} 
+								alt={station.name} 
+								class="w-full h-full object-cover"
+								onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+							/>
+							<div class="hidden w-2/3 h-2/3 opacity-50">
+								<Logo />
+							</div>
+						) : (
+							<div class="w-2/3 h-2/3 opacity-50">
+								<Logo />
+							</div>
+						)}
+					</div>
+
+					<div class="flex flex-col gap-4">
+						<span class="text-xs font-bold uppercase tracking-widest text-blue-400">Radio Station</span>
+						<h1 class="text-5xl md:text-7xl font-bold" transition:name={`station-name-${station.id}`}>
+							{station.name}
+						</h1>
+						<div class="flex flex-wrap gap-2 mt-2">
+							{station.tags.map(tag => (
+								<span class="px-3 py-1 bg-zinc-800 rounded-full text-sm text-zinc-400">#{tag}</span>
+							))}
+						</div>
+					</div>
+				</header>
+
+				<section class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+					<div class="lg:col-span-2 flex flex-col gap-8">
+						<!-- Audio Player Card -->
+						<div class="bg-zinc-800/50 p-8 rounded-3xl border border-white/5">
+							<h3 class="text-xl font-semibold mb-6">Live Stream</h3>
+							<audio controls class="w-full" autoplay>
+								<source src={station.urlResolved} type="audio/mpeg" />
+								Your browser does not support the audio element.
+							</audio>
+							<p class="mt-4 text-sm text-zinc-500">
+								{station.codec && <span>Codec: {station.codec}</span>}
+								{station.bitrate > 0 && <span> • Bitrate: {station.bitrate} kbps</span>}
+							</p>
+						</div>
+					</div>
+
+					<aside class="flex flex-col gap-6">
+						<div class="bg-zinc-800/30 p-6 rounded-2xl border border-white/5">
+							<h4 class="text-sm font-bold text-zinc-500 uppercase mb-4">Location</h4>
+							<p class="text-lg">{station.country} {station.state && station.state !== station.country && `• ${station.state}`}</p>
+						</div>
+
+						<div class="bg-zinc-800/30 p-6 rounded-2xl border border-white/5">
+							<h4 class="text-sm font-bold text-zinc-500 uppercase mb-4">Popularity</h4>
+							<p class="text-3xl font-bold">{station.votes.toLocaleString()} <span class="text-sm font-normal text-zinc-500">votes</span></p>
+						</div>
+
+						{station.homepage && (
+							<a 
+								href={station.homepage} 
+								target="_blank" 
+								rel="noopener noreferrer"
+								class="flex items-center justify-center gap-2 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform"
+							>
+								Visit Website
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+							</a>
+						)}
+					</aside>
+				</section>
+			</div>
+		</div>
+	</div>
+</Layout>

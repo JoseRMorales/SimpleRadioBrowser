@@ -1,0 +1,49 @@
+---
+import type { Station } from "radio-browser-api";
+import Logo from "@/icons/Logo.astro";
+
+interface Props {
+  station: Station;
+}
+
+const { station } = Astro.props;
+
+// Check if favicon exists and is not an empty string
+const hasFavicon = station.favicon && station.favicon.trim() !== "";
+---
+
+<a
+  href={`/station/${station.id}`}
+  class="flex flex-col gap-2 p-4 transition-all duration-300 rounded-xl hover:bg-white/10 group"
+>
+  <div
+    class="aspect-square w-full shadow-lg rounded-xl overflow-hidden bg-zinc-800 flex items-center justify-center"
+    transition:name={`station-image-${station.id}`}
+  >
+    {
+      hasFavicon ? (
+        <div class="relative w-full h-full flex items-center justify-center">
+          <img
+            src={station.favicon}
+            alt={station.name}
+            class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          />
+          <div class="hidden w-2/3 h-2/3 opacity-50 group-hover:scale-110 transition-transform">
+            <Logo />
+          </div>
+        </div>
+      ) : (
+        <div class="w-2/3 h-2/3 opacity-50 group-hover:scale-110 transition-transform">
+          <Logo />
+        </div>
+      )
+    }
+  </div>
+  <h2
+    class="font-semibold truncate text-zinc-300 group-hover:text-white transition-colors"
+    transition:name={`station-name-${station.id}`}
+  >
+    {station.name}
+  </h2>
+</a>
