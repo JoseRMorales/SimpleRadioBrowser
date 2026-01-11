@@ -1,7 +1,8 @@
 ---
-import { RadioBrowserApi, type Station } from "radio-browser-api";
+import { type Station } from "radio-browser-api";
 import Logo from "@/icons/Logo.astro";
 import Layout from "@/layouts/Layout.astro";
+import { getRadioBrowserApi } from "@/lib/radio-browser";
 
 const { id } = Astro.params;
 
@@ -9,7 +10,7 @@ if (!id) {
 	return Astro.redirect("/");
 }
 
-const api = new RadioBrowserApi("Simple Radio Browser App");
+const api = await getRadioBrowserApi();
 let station: Station | undefined ;
 
 try {

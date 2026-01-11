@@ -1,9 +1,9 @@
 ---
-import { RadioBrowserApi } from "radio-browser-api";
 import StationCard from "@/components/StationCard.astro";
 import Layout from "@/layouts/Layout.astro";
+import { getRadioBrowserApi } from "@/lib/radio-browser";
 
-const api = new RadioBrowserApi("Simple Radio Browser App");
+const api = await getRadioBrowserApi();
 async function getTopStationsByCountry(countryCode: string) {
 	const stations = await api.searchStations({
 		countryCode: countryCode,
