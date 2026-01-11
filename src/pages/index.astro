@@ -1,9 +1,9 @@
 ---
-import type { Station } from "radio-browser-api";
 import ErrorState from "@/components/ErrorState.astro";
 import StationCard from "@/components/StationCard.astro";
 import Layout from "@/layouts/Layout.astro";
-import { getRadioBrowserApi } from "@/lib/radio-browser";
+import { getRadioBrowserApi, withRetry } from "@/lib/radio-browser";
+import { cleanStation, type Station } from "@/lib/usePlayerStore";
 
 let topSpanishStations: Station[] = [];
 let error = null;
@@ -11,14 +11,16 @@ let error = null;
 try {
 	const api = await getRadioBrowserApi();
 	async function getTopStationsByCountry(countryCode: string) {
-		const stations = await api.searchStations({
-			countryCode: countryCode,
-			limit: 18,
-			order: "votes",
-			reverse: true,
-			hideBroken: true,
-		});
-		return stations;
+		const rawStations = await withRetry(() =>
+			api.searchStations({
+				countryCode: countryCode,
+				limit: 18,
+				order: "votes",
+				reverse: true,
+				hideBroken: true,
+			}),
+		);
+		return rawStations.map(cleanStation);
 	}
 	topSpanishStations = await getTopStationsByCountry("ES");
 } catch (e) {
