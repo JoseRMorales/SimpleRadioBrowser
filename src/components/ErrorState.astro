@@ -1,0 +1,73 @@
+---
+import { TriangleAlert } from "@lucide/astro";
+
+interface Props {
+  title?: string;
+  message?: string;
+  retry?: boolean;
+  showHome?: boolean;
+}
+
+const {
+  title = "Signal Lost",
+  message = "We're having trouble connecting to the radio network. Please check your connection or try again later.",
+  retry = false,
+  showHome = false,
+} = Astro.props;
+---
+
+<div
+  class="relative flex-1 flex flex-col items-center justify-center text-center bg-zinc-900 text-zinc-100 overflow-hidden min-h-full w-full"
+>
+  <!-- Fondo Unificado (Rojos y Naranjas) -->
+  <div
+    class="absolute inset-0 bg-linear-to-b from-red-600/10 to-zinc-900 pointer-events-none"
+  >
+  </div>
+  <div
+    class="absolute -top-24 -left-24 w-96 h-96 bg-red-500/10 rounded-full blur-[120px]"
+  >
+  </div>
+  <div
+    class="absolute -bottom-24 -right-24 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px]"
+  >
+  </div>
+
+  <div class="relative z-10 px-6 py-20">
+    <div class="bg-red-500/10 p-6 rounded-3xl inline-block mb-8">
+      <TriangleAlert class="text-red-500" size={64} />
+    </div>
+
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
+
+    <p
+      class="text-zinc-400 text-lg md:text-xl max-w-md mx-auto mb-12 text-balance leading-relaxed"
+    >
+      {message}
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      {
+        retry && (
+          <button
+            onclick="window.location.reload()"
+            class="px-8 py-3 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform active:scale-95 cursor-pointer"
+          >
+            Try Again
+          </button>
+        )
+      }
+
+      {
+        showHome && (
+          <a
+            href="/"
+            class="px-8 py-3 bg-zinc-800 text-white font-bold rounded-full hover:bg-zinc-700 transition-colors"
+          >
+            Back to Home
+          </a>
+        )
+      }
+    </div>
+  </div>
+</div>

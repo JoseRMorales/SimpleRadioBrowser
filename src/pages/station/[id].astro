@@ -1,5 +1,6 @@
 ---
 import { type Station } from "radio-browser-api";
+import ErrorState from "@/components/ErrorState.astro";
 import Logo from "@/icons/Logo.astro";
 import Layout from "@/layouts/Layout.astro";
 import { getRadioBrowserApi } from "@/lib/radio-browser";
@@ -10,29 +11,41 @@ if (!id) {
 	return Astro.redirect("/");
 }
 
-const api = await getRadioBrowserApi();
-let station: Station | undefined ;
+let station: Station | undefined;
+let apiError = null;
 
 try {
+	const api = await getRadioBrowserApi();
 	const stations = await api.getStationsById([id]);
 	station = stations[0];
 } catch (error) {
 	console.error("Error fetching station:", error);
+	apiError = error;
 }
 
-if (!station) {
+if (!apiError && !station) {
 	return Astro.redirect("/404");
 }
 
-const hasFavicon = station.favicon && station.favicon.trim() !== "";
+const hasFavicon = station?.favicon && station.favicon.trim() !== "";
 ---
 
-<Layout title={`${station.name} - Simple Radio Browser`}>
+<Layout title={station ? `${station.name} - Simple Radio Browser` : "Error - Simple Radio Browser"}>
 	<div class="relative flex flex-col h-full overflow-hidden bg-zinc-900 text-zinc-100">
 		<!-- Background Gradient Overlay -->
 		<div class="absolute inset-0 bg-linear-to-b from-blue-600/20 to-zinc-900 pointer-events-none"></div>
 
 		<div class="relative z-10 flex-1 overflow-y-auto px-6 py-8">
+			{apiError ? (
+				<div class="max-w-[1000px] mx-auto h-full flex flex-col justify-center">
+					<ErrorState 
+						title="Connection Failed" 
+						message="We're having trouble reaching the radio station database. Please try again later."
+						retry={true}
+					/>
+				</div>
+			) : (
+				station && (
 			<div class="max-w-[1000px] mx-auto">
 				<!-- Back Navigation -->
 				<a href="/" class="inline-flex items-center gap-2 mb-8 text-zinc-400 hover:text-white transition-colors">
@@ -116,6 +129,7 @@ const hasFavicon = station.favicon && station.favicon.trim() !== "";
 					</aside>
 				</section>
 			</div>
+		))}
 		</div>
 	</div>
 </Layout>

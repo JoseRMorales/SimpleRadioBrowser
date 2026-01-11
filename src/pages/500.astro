@@ -1,0 +1,12 @@
+---
+import ErrorState from "@/components/ErrorState.astro";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+  error?: unknown;
+}
+---
+
+<Layout title="500 - Server Error">
+  <ErrorState showHome={true} />
+</Layout>

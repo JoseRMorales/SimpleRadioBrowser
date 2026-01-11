@@ -1,20 +1,30 @@
 ---
+import type { Station } from "radio-browser-api";
+import ErrorState from "@/components/ErrorState.astro";
 import StationCard from "@/components/StationCard.astro";
 import Layout from "@/layouts/Layout.astro";
 import { getRadioBrowserApi } from "@/lib/radio-browser";
 
-const api = await getRadioBrowserApi();
-async function getTopStationsByCountry(countryCode: string) {
-	const stations = await api.searchStations({
-		countryCode: countryCode,
-		limit: 18,
-		order: "votes",
-		reverse: true,
-		hideBroken: true,
-	});
-	return stations;
+let topSpanishStations: Station[] = [];
+let error = null;
+
+try {
+	const api = await getRadioBrowserApi();
+	async function getTopStationsByCountry(countryCode: string) {
+		const stations = await api.searchStations({
+			countryCode: countryCode,
+			limit: 18,
+			order: "votes",
+			reverse: true,
+			hideBroken: true,
+		});
+		return stations;
+	}
+	topSpanishStations = await getTopStationsByCountry("ES");
+} catch (e) {
+	console.error("Failed to fetch stations:", e);
+	error = e;
 }
-const topSpanishStations = await getTopStationsByCountry("ES");
 ---
 
 <Layout title="Simple Radio Browser">
@@ -23,12 +33,18 @@ const topSpanishStations = await getTopStationsByCountry("ES");
 		class="relative transition-all duration-1000 overflow-y-auto h-full bg-blue-400/60 bg-linear-to-t from-card via-zinc-900 bg-local"
 		transition:animate="fade"
 	>
-		<div class="relative z-10 px-6 max-w-[1500px] mx-auto">
-			<div
-				class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-6 py-6"
-			>
-				{topSpanishStations.map((station) => <StationCard station={station} />)}
-			</div>
-		</div>
+		{
+			error ? (
+				<ErrorState retry={true} />
+			) : (
+				<div class="relative z-10 px-6 max-w-[1500px] mx-auto h-full flex flex-col">
+					<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-6 py-6">
+						{topSpanishStations.map((station) => (
+							<StationCard station={station} />
+						))}
+					</div>
+				</div>
+			)
+		}
 	</div>
 </Layout>
