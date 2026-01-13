@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import LoadingIndicator from "astro-loading-indicator/component";
 import { Toaster } from "react-hot-toast";
 import AsideMenu from "@/components/AsideMenu.astro";
 import Header from "@/components/Header";
@@ -47,6 +48,7 @@ const currentCountry = searchParams.get("country") || "ES";
 	<body>
 		<Toaster client:load position="bottom-right" />
 		<ClientRouter />
+		<LoadingIndicator color="blue" />
 		<div id="app" class="relative h-screen p-2 gap-2 items-stretch">
 			<div class="[grid-area:header]">
 				<Header

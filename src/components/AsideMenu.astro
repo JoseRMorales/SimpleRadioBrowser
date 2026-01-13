@@ -8,20 +8,29 @@ interface Tag {
 }
 
 const api = await getRadioBrowserApi();
-const rawTags = (await api.getTags(undefined, {
-	order: "stationcount",
-	reverse: true,
-	limit: 1000,
-})) as Tag[];
-const currentTag = Astro.url.searchParams.get("tag") || "";
+let tags: Tag[] = [];
 
-const tags = rawTags
-	.filter((t) => t.name.length > 2 && t.name.length < 20)
-	.sort((a, b) => {
-		if (a.name === currentTag) return -1;
-		if (b.name === currentTag) return 1;
-		return b.stationcount - a.stationcount;
-	});
+try {
+	const rawTags = (await api.getTags(undefined, {
+		order: "stationcount",
+		reverse: true,
+		limit: 1000,
+	})) as Tag[];
+
+	const currentTag = Astro.url.searchParams.get("tag") || "";
+
+	tags = rawTags
+		.filter((t) => t.name.length > 2 && t.name.length < 20)
+		.sort((a, b) => {
+			if (a.name === currentTag) return -1;
+			if (b.name === currentTag) return 1;
+			return b.stationcount - a.stationcount;
+		});
+} catch (error) {
+	console.error("AsideMenu: Failed to fetch tags", error);
+}
+
+const currentTag = Astro.url.searchParams.get("tag") || "";
 ---
 
 <nav class="flex flex-col flex-1 gap-2 bg-zinc-900/50 h-full">

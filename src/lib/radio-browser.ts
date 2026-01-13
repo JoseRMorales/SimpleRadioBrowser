@@ -52,7 +52,7 @@ export async function getRadioBrowserApi(): Promise<RadioBrowserApi> {
 		try {
 			console.log(`Checking health for: ${server}`);
 			const controller = new AbortController();
-			const timeoutId = setTimeout(() => controller.abort(), 2500);
+			const timeoutId = setTimeout(() => controller.abort(), 5000);
 
 			const url = `https://${server}/json/codecs`;
 
@@ -70,7 +70,7 @@ export async function getRadioBrowserApi(): Promise<RadioBrowserApi> {
 	}
 
 	if (!selectedServer) {
-		selectedServer = 'fi1.api.radio-browser.info';
+		selectedServer = servers[0] || 'fi1.api.radio-browser.info';
 	}
 
 	const api = new RadioBrowserApi('Simple Radio Browser App', true);
