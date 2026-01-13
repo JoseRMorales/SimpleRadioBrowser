@@ -10,6 +10,7 @@ export const usePlayerStore = create<PlayerState>()(
 			isPlaying: false,
 			isLoading: false,
 			volume: 0.7,
+			isMuted: false,
 			setCurrentStation: (station) => {
 				if (station && !station.urlResolved) {
 					toast.error(`Station "${station.name}" has no valid stream URL.`);
@@ -24,13 +25,15 @@ export const usePlayerStore = create<PlayerState>()(
 					}
 					return { isPlaying: !state.isPlaying };
 				}),
+			toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
+			setIsMuted: (isMuted: boolean) => set({ isMuted }),
 			setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
 			setIsLoading: (isLoading: boolean) => set({ isLoading }),
 			setVolume: (volume: number) => set({ volume }),
 		}),
 		{
 			name: 'radio-player-storage',
-			partialize: (state) => ({ volume: state.volume }), // Only persist volume
+			partialize: (state) => ({ volume: state.volume, isMuted: state.isMuted }), // Persist volume and mute state
 		},
 	),
 );

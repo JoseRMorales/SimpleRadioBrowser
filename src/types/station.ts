@@ -15,8 +15,11 @@ export interface PlayerState {
 	isPlaying: boolean;
 	isLoading: boolean;
 	volume: number;
+	isMuted: boolean;
 	setCurrentStation: (station: Station | null) => void;
 	togglePlay: () => void;
+	toggleMute: () => void;
+	setIsMuted: (isMuted: boolean) => void;
 	setIsPlaying: (isPlaying: boolean) => void;
 	setIsLoading: (isLoading: boolean) => void;
 	setVolume: (volume: number) => void;

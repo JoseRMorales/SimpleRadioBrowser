@@ -1,4 +1,4 @@
-import { Loader2, Music, Pause, Play, Volume2 } from 'lucide-react';
+import { Loader2, Music, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 
@@ -13,6 +13,9 @@ const Player = () => {
 		setIsPlaying,
 		volume,
 		setVolume,
+		isMuted,
+		toggleMute,
+		setIsMuted,
 		isLoading,
 		setIsLoading,
 	} = usePlayerStore();
@@ -57,12 +60,13 @@ const Player = () => {
 		};
 	}, [setIsLoading, setIsPlaying, isPlaying]);
 
-	// Sync Volume
+	// Sync Volume & Mute
 	useEffect(() => {
 		if (audioRef.current) {
 			audioRef.current.volume = volume;
+			audioRef.current.muted = isMuted;
 		}
-	}, [volume]);
+	}, [volume, isMuted]);
 
 	// Sync Playback
 	useEffect(() => {
@@ -106,6 +110,9 @@ const Player = () => {
 	const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const val = Number.parseFloat(e.target.value);
 		setVolume(val);
+		if (val > 0 && isMuted) {
+			setIsMuted(false);
+		}
 	};
 
 	if (!currentStation) {
@@ -161,7 +168,17 @@ const Player = () => {
 			</div>
 
 			<div className="flex items-center gap-3 min-w-[200px] justify-end group">
-				<Volume2 size={18} className="text-zinc-400 group-hover:text-white transition-colors" />
+				<button
+					type="button"
+					onClick={toggleMute}
+					className="hover:scale-110 transition-transform active:scale-90"
+				>
+					{isMuted || volume === 0 ? (
+						<VolumeX size={18} className="text-zinc-400 group-hover:text-white transition-colors" />
+					) : (
+						<Volume2 size={18} className="text-zinc-400 group-hover:text-white transition-colors" />
+					)}
+				</button>
 				<div className="w-24 h-1 bg-zinc-800 rounded-full relative flex items-center">
 					<input
 						type="range"
@@ -173,8 +190,10 @@ const Player = () => {
 						className="absolute w-full h-full opacity-0 cursor-pointer z-10"
 					/>
 					<div
-						className="h-full bg-white rounded-full group-hover:bg-blue-400 transition-colors pointer-events-none"
-						style={{ width: `${volume * 100}%` }}
+						className={`h-full rounded-full transition-colors pointer-events-none ${
+							isMuted ? 'bg-zinc-600' : 'bg-white group-hover:bg-blue-400'
+						}`}
+						style={{ width: `${isMuted ? 0 : volume * 100}%` }}
 					/>
 				</div>
 			</div>
