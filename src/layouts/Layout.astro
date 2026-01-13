@@ -49,8 +49,8 @@ const currentCountry = searchParams.get("country") || "ES";
 		<Toaster client:load position="bottom-right" />
 		<ClientRouter />
 		<LoadingIndicator color="blue" />
-		<div id="app" class="relative h-screen p-2 gap-2 items-stretch">
-			<div class="[grid-area:header]">
+		<div id="app" class="relative min-h-screen grid gap-2 p-2 sm:p-4">
+			<div class="[grid-area:header] sticky top-0 z-40">
 				<Header
 					client:load
 					countries={countries}
@@ -58,20 +58,56 @@ const currentCountry = searchParams.get("country") || "ES";
 					initialCountry={currentCountry}
 				/>
 			</div>
+
+			<!-- Mobile Sidebar Overlay -->
+			<div
+				id="sidebar-overlay"
+				class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden opacity-0 pointer-events-none transition-opacity duration-300"
+			>
+			</div>
+
 			<aside
-				class="[grid-area:aside] flex-col flex min-h-0 bg-card rounded-2xl"
+				id="sidebar"
+				class="[grid-area:aside] fixed inset-y-0 left-0 z-50 w-[280px] md:w-auto md:h-auto md:relative md:z-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex-col flex min-h-0 bg-card md:rounded-2xl shadow-2xl md:shadow-none"
 			>
 				<AsideMenu />
 			</aside>
+
 			<main
 				class="[grid-area:main] bg-card rounded-2xl min-h-0 overflow-hidden"
 			>
 				<slot />
 			</main>
-			<footer class="[grid-area:player] min-h-[80px] overflow-hidden">
+
+			<footer
+				class="[grid-area:player] sticky bottom-0 z-40 h-[80px] overflow-hidden"
+			>
 				<Player client:load transition:persist />
 			</footer>
 		</div>
+
+		<script>
+			import { useUIStore } from "@/stores/useUIStore";
+
+			const sidebar = document.getElementById("sidebar");
+			const overlay = document.getElementById("sidebar-overlay");
+
+			if (sidebar && overlay) {
+				useUIStore.subscribe((state) => {
+					if (state.isMobileMenuOpen) {
+						sidebar.classList.remove("-translate-x-full");
+						overlay.classList.remove("opacity-0", "pointer-events-none");
+					} else {
+						sidebar.classList.add("-translate-x-full");
+						overlay.classList.add("opacity-0", "pointer-events-none");
+					}
+				});
+
+				overlay.addEventListener("click", () => {
+					useUIStore.getState().setMobileMenuOpen(false);
+				});
+			}
+		</script>
 	</body>
 </html>
 
@@ -79,10 +115,22 @@ const currentCountry = searchParams.get("country") || "ES";
 	#app {
 		display: grid;
 		grid-template-areas:
-			"header header header"
-			"aside main main"
-			"player player player";
-		grid-template-columns: 350px 1fr;
+			"header"
+			"main"
+			"player";
+		grid-template-columns: 1fr;
 		grid-template-rows: auto 1fr auto;
+		height: 100vh;
+		height: 100dvh;
+	}
+
+	@media (min-width: 768px) {
+		#app {
+			grid-template-areas:
+				"header header"
+				"aside main"
+				"player player";
+			grid-template-columns: 320px 1fr;
+		}
 	}
 </style>

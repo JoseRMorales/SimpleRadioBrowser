@@ -131,26 +131,26 @@ const Player = () => {
 	}
 
 	return (
-		<div className="h-full flex items-center justify-between px-4 bg-zinc-950/50 border-t border-white/5 backdrop-blur-xl">
-			<div className="flex items-center gap-4 min-w-[300px]">
+		<div className="h-full flex items-center justify-between px-3 md:px-4 bg-zinc-950/50 border-t border-white/5 backdrop-blur-xl">
+			<div className="flex items-center gap-3 md:gap-4 flex-1 md:flex-none md:min-w-[300px] overflow-hidden">
 				<img
 					src={currentStation.favicon}
 					alt={currentStation.name}
-					className="w-12 h-12 rounded-lg object-cover bg-zinc-800"
+					className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover bg-zinc-800 shrink-0"
 					onError={(e) => {
 						(e.target as HTMLImageElement).src =
-							'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDE4VjVsMTItM3YxMyIvPjxwYXRoIGQ9Ik02IDIyaDNWMTloLTN6Ii8+PHBhdGggZD0iTTE4IDE5aDNWMTZoLTN6Ii8+PC9zdmc+';
+							'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDE4VjVsMTItM3YxMyIvPjxwYXRoIGQ9Ik02IDIyaDNWMTloLTN6Ii8+PHBhdGggZD0iTTE4IDE5aDNWMTloLTN6Ii8+PC9zdmc+';
 					}}
 				/>
-				<div className="flex flex-col overflow-hidden">
+				<div className="flex flex-col min-w-0">
 					<span className="text-sm font-bold truncate text-zinc-100">{currentStation.name}</span>
-					<span className="text-xs text-zinc-500 truncate">
+					<span className="text-[10px] md:text-xs text-zinc-500 truncate">
 						{currentStation.country} {currentStation.state && `• ${currentStation.state}`}
 					</span>
 				</div>
 			</div>
 
-			<div className="flex flex-col items-center gap-2">
+			<div className="flex flex-col items-center justify-center px-4">
 				<button
 					type="button"
 					onClick={togglePlay}
@@ -167,7 +167,7 @@ const Player = () => {
 				</button>
 			</div>
 
-			<div className="flex items-center gap-3 min-w-[200px] justify-end group">
+			<div className="hidden md:flex items-center gap-3 min-w-[200px] justify-end group">
 				<button
 					type="button"
 					onClick={toggleMute}

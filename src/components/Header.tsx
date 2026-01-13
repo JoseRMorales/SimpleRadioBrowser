@@ -1,5 +1,5 @@
 import { navigate } from 'astro:transitions/client';
-import { Globe, Search } from 'lucide-react';
+import { Globe, Menu, Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import icon from '@/assets/icon.svg';
 import {
@@ -9,6 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { useUIStore } from '@/stores/useUIStore';
 
 interface Country {
 	name: string;
@@ -28,6 +29,7 @@ export default function Header({
 	initialCountry = 'ES',
 }: HeaderProps) {
 	const [search, setSearch] = useState(initialSearch);
+	const { toggleMobileMenu, isMobileMenuOpen } = useUIStore();
 
 	// Debounced search
 	useEffect(() => {
@@ -70,18 +72,26 @@ export default function Header({
 	};
 
 	return (
-		<header className="h-[64px] grid grid-cols-3 items-center px-6 bg-zinc-950/20 backdrop-blur-md border-b border-white/5">
-			{/* Left side spacer */}
-			<div className="flex items-center">
+		<header className="h-[64px] flex items-center justify-between px-4 md:px-6 bg-zinc-950/20 backdrop-blur-md border-b border-white/5 gap-4">
+			{/* Left: Menu & Logo */}
+			<div className="flex items-center gap-2 md:gap-4 shrink-0">
+				<button
+					type="button"
+					onClick={toggleMobileMenu}
+					className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+					aria-label="Toggle menu"
+				>
+					{isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+				</button>
 				<a href="/" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
 					<img src={icon.src} alt="RadioBrowser Logo" className="w-8 h-8" />
-					<span className="hidden sm:inline">SimpleRadioBrowser</span>
+					<span className="hidden lg:inline">SimpleRadioBrowser</span>
 				</a>
 			</div>
 
 			{/* Center: Search */}
-			<div className="flex justify-center">
-				<form onSubmit={handleSearch} className="w-full max-w-md relative group">
+			<div className="flex-1 max-w-xl">
+				<form onSubmit={handleSearch} className="relative group">
 					<Search
 						className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-white transition-colors"
 						size={16}
@@ -90,20 +100,22 @@ export default function Header({
 						type="text"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search for radio stations..."
-						className="w-full bg-zinc-800/30 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-hidden focus:ring-1 focus:ring-white/20 focus:bg-zinc-800/60 transition-all shadow-sm"
+						placeholder="Search stations..."
+						className="w-full bg-zinc-800/30 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-xs md:text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-hidden focus:ring-1 focus:ring-white/20 focus:bg-zinc-800/60 transition-all shadow-sm"
 					/>
 				</form>
 			</div>
 
 			{/* Right: Country Selector */}
-			<div className="flex justify-end">
+			<div className="shrink-0">
 				<Select value={initialCountry} onValueChange={handleCountryChange}>
-					<SelectTrigger className="w-[180px] bg-zinc-800/30 border-white/10 rounded-full h-9 text-xs">
-						<Globe className="size-3.5 mr-2 text-zinc-500" />
-						<SelectValue placeholder="Select country" />
+					<SelectTrigger className="w-[45px] md:w-[150px] bg-zinc-800/30 border-white/10 rounded-full h-8 md:h-9 text-[10px] md:text-xs px-2 md:px-3">
+						<Globe className="size-3.5 md:mr-2 text-zinc-500" />
+						<div className="hidden md:block">
+							<SelectValue placeholder="Country" />
+						</div>
 					</SelectTrigger>
-					<SelectContent className="bg-zinc-900 border-white/10">
+					<SelectContent className="bg-zinc-900 border-white/10 max-h-[50vh]">
 						{countries.map((c) => (
 							<SelectItem key={c.code} value={c.code} className="text-xs">
 								{c.name} <span className="text-zinc-500 ml-1">({c.stationCount})</span>

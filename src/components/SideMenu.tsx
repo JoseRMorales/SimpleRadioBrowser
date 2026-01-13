@@ -3,6 +3,7 @@ import { ChevronRight, Hash, Home } from 'lucide-react';
 import { useState } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { useUIStore } from '@/stores/useUIStore';
 
 interface Tag {
 	name: string;
@@ -16,6 +17,7 @@ interface SideMenuProps {
 
 export default function SideMenu({ tags, activeTag }: SideMenuProps) {
 	const [isOpen, setIsOpen] = useState(true);
+	const { setMobileMenuOpen } = useUIStore();
 
 	const handleTagClick = (tag: string) => {
 		const params = new URLSearchParams(window.location.search);
@@ -25,6 +27,7 @@ export default function SideMenu({ tags, activeTag }: SideMenuProps) {
 			params.set('tag', tag);
 			params.delete('q'); // Clear search when clicking a tag
 		}
+		setMobileMenuOpen(false);
 		navigate(`/?${params.toString()}`);
 	};
 
