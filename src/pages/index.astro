@@ -1,4 +1,5 @@
 ---
+import { XIcon } from "lucide-react";
 import ErrorState from "@/components/ErrorState.astro";
 import StationCard from "@/components/StationCard.astro";
 import Layout from "@/layouts/Layout.astro";
@@ -8,16 +9,17 @@ import type { Station } from "@/types/station";
 
 const search = Astro.url.searchParams.get("q") || "";
 const countryCode = Astro.url.searchParams.get("country") || "ES";
+const tag = Astro.url.searchParams.get("tag") || "";
 
 let stations: Station[] = [];
 let error = null;
 
 try {
 	const api = await getRadioBrowserApi();
-	console.log("Getting stations...", countryCode, search);
 	const rawStations = await withRetry(() =>
 		api.searchStations({
 			...(search ? { name: search } : {}),
+			...(tag ? { tag: tag } : {}),
 			countryCode: countryCode,
 			limit: 30,
 			order: "votes",
@@ -25,7 +27,6 @@ try {
 			hideBroken: true,
 		}),
 	);
-	console.log("Stations fetched:", rawStations);
 	stations = rawStations.map(cleanStation);
 } catch (e) {
 	console.error("Failed to fetch stations:", e);
@@ -46,7 +47,22 @@ try {
 				<div class="relative z-10 px-6 max-w-[1500px] mx-auto h-full flex flex-col">
 					<div class="flex items-center justify-between py-6">
 						<h1 class="text-2xl font-bold text-zinc-100">
-							{search ? `Results for "${search}"` : "Top Stations"}
+							{search ? (
+								`Results for "${search}"`
+							) : tag ? (
+								<div class="flex items-center gap-2">
+									<span>Tag: {tag}</span>
+									<a
+										href="/"
+										class="text-zinc-500 hover:text-zinc-100 transition-colors"
+										title="Clear tag"
+									>
+										<XIcon size={20} />
+									</a>
+								</div>
+							) : (
+								"Top Stations"
+							)}
 						</h1>
 					</div>
 
