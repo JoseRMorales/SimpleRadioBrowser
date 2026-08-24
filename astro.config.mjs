@@ -9,7 +9,7 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
-	base: '/radio',
+	base: '/radio/',
 	output: 'server',
 	integrations: [react()],
 	adapter: cloudflare(),
