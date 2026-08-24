@@ -25,14 +25,14 @@ export default function SideMenu({ tags, activeTag }: SideMenuProps) {
 			params.delete('tag');
 		} else {
 			params.set('tag', tag);
-			params.delete('q'); // Clear search when clicking a tag
+			params.delete('q');
 		}
 		setMobileMenuOpen(false);
-		navigate(`/?${params.toString()}`);
+		navigate(`${import.meta.env.BASE_URL}?${params.toString()}`);
 	};
 
 	const handleHomeClick = () => {
-		navigate('/');
+		navigate(import.meta.env.BASE_URL);
 	};
 
 	return (

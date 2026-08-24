@@ -33,7 +33,6 @@ export default function Header({
 
 	// Debounced search
 	useEffect(() => {
-		// Don't trigger search if it's the initial value
 		if (search === initialSearch) return;
 
 		const timer = setTimeout(() => {
@@ -44,7 +43,7 @@ export default function Header({
 				params.delete('q');
 			}
 			params.set('country', initialCountry);
-			navigate(`/?${params.toString()}`, { history: 'replace' });
+			navigate(`${import.meta.env.BASE_URL}?${params.toString()}`, { history: 'replace' });
 		}, 200);
 
 		return () => clearTimeout(timer);
@@ -59,7 +58,7 @@ export default function Header({
 			params.delete('q');
 		}
 		params.set('country', initialCountry);
-		navigate(`/?${params.toString()}`);
+		navigate(`${import.meta.env.BASE_URL}?${params.toString()}`);
 	};
 
 	const handleCountryChange = (newCountry: string) => {
@@ -68,7 +67,7 @@ export default function Header({
 		if (search) {
 			params.set('q', search);
 		}
-		navigate(`/?${params.toString()}`);
+		navigate(`${import.meta.env.BASE_URL}?${params.toString()}`);
 	};
 
 	return (
