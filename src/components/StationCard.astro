@@ -14,7 +14,7 @@ const hasFavicon = station.favicon && station.favicon.trim() !== "";
 ---
 
 <a
-  href={`/station/${station.id}`}
+  href={`${import.meta.env.BASE_URL}station/${station.id}`}
   class="flex flex-col gap-2 p-4 transition-all duration-300 rounded-xl hover:bg-white/10 group overflow-hidden"
 >
   <div

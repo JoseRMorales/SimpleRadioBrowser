@@ -83,7 +83,11 @@ export default function Header({
 				>
 					{isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
 				</button>
-				<a href="/" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+				<a
+					href={import.meta.env.BASE_URL}
+					className="text-xl font-bold tracking-tight text-white flex items-center gap-2"
+				>
+					{' '}
 					<img src={icon.src} alt="RadioBrowser Logo" className="w-8 h-8" />
 					<span className="hidden lg:inline">SimpleRadioBrowser</span>
 				</a>

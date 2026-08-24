@@ -1,0 +1,2 @@
+/station/* /radio/station/:splat 301
+/ /radio 301
