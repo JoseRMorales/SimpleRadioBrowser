@@ -6,12 +6,12 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()]
-  },
-
-  output: "server",
-  integrations: [react()],
-  adapter: cloudflare(),
-  prefetch: false,
+	vite: {
+		plugins: [tailwindcss()],
+	},
+	base: '/radio',
+	output: 'server',
+	integrations: [react()],
+	adapter: cloudflare(),
+	prefetch: false,
 });
